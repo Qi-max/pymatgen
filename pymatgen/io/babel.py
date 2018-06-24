@@ -240,12 +240,12 @@ class BabelMolAdaptor(object):
 
         ff = ob.OBForceField_FindType(forcefield)
         if ff == 0:
-            print("Could not find forcefield {} in openbabel, the forcefield "
-                  "will be reset as default 'mmff94'".format(forcefield))
+            warnings.warn("This input forcefield {} is not supported "
+                          "in openbabel. The forcefield will be reset as "
+                          "default 'mmff94' for now.".format(forcefield))
             ff = ob.OBForceField_FindType("mmff94")
 
         if freeze_atoms:
-            print('{} atoms will be freezed'.format(len(freeze_atoms)))
             constraints = ob.OBFFConstraints()
             for atom in ob.OBMolAtomIter(self._obmol):
                 atom_id = atom.GetIndex() + 1
