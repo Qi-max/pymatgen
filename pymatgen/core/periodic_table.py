@@ -409,10 +409,10 @@ class Element(Enum):
 
         at_r = d.get("Atomic radius", "no data")
         if str(at_r).startswith("no data"):
-            self.atomic_radius = None
+            self._atomic_radius = None
         else:
-            self.atomic_radius = Length(at_r, "ang")
-        self.atomic_mass = Mass(d["Atomic mass"], "amu")
+            self._atomic_radius = Length(at_r, "ang")
+        self._atomic_mass = Mass(d["Atomic mass"], "amu")
         self.long_name = d["Name"]
         self._data = d
 
@@ -426,6 +426,20 @@ class Element(Enum):
                           "avoid errors caused by the code expecting a float."
                           % self.symbol)
             return float("NaN")
+
+    @property
+    def atomic_radius(self):
+        """
+        Returns: The atomic radius of the element in Ångstroms.
+        """
+        return self._atomic_radius
+
+    @property
+    def atomic_mass(self):
+        """
+        Returns: The atomic mass of the element in amu.
+        """
+        return self._atomic_mass
 
     def __getattr__(self, item):
         if item in ["mendeleev_no", "electrical_resistivity",
@@ -903,6 +917,12 @@ class Element(Enum):
         True if element is a rare earth metal.
         """
         return self.is_lanthanoid or self.is_actinoid
+
+    @property
+    def is_metal(self):
+        return (self.is_alkali or self.is_alkaline or
+                self.is_post_transition_metal or self.is_transition_metal or
+                self.is_lanthanoid or self.is_actinoid)
 
     @property
     def is_metalloid(self):
